@@ -30,11 +30,11 @@ pacman::p_load("MRInstruments", "TwoSampleMR", "tidyverse", "dplyr", "ggpubr", "
 # NOTE: this takes really long if run in RStudio
 exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_func
   x <- read.table(file = file, header = T)  # 读取Exposures GWAS txt文件，第一行为变量名
-  x$pheno <- "DNA methylation ageing"      #给pheno列赋值
-  x <- format_data(x, type = "exposure",   #调用MRinstrumentsR包中format_date函数，将输入文件格式进行调整
-                   phenotype_col = "pheno",
-                   snp_col = SNP,
-                   beta_col = "Effect", 
+  x$pheno <- "DNA methylation ageing"      #给pheno整列赋值
+  x <- format_data(x, type = "exposure",   #调用TwoSampleMR R包中format_date函数，将输入文件格式进行调整，以适用于MR分析
+                   phenotype_col = "pheno",    #定义phenotype_col在输入文件中的对应列
+                   snp_col = SNP,              #定义snp_col在输入文件中的对应列，SNP由参数传入
+                   beta_col = "Effect",        #同上
                    se_col = "SE", 
                    eaf_col = "Freq1", 
                    effect_allele_col = "A1", 
@@ -43,8 +43,8 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
                    samplesize_col = "N", 
                    chr_col = "chr", 
                    pos_col = "bp")
-  x$id.exposure <- data_name
-  x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)
+  x$id.exposure <- data_name                              #在最后一列加入Clock Age标签，用于clump_data
+  x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)  # 调用TwoSampleMR R包中clump_data函数，用PLINK clumping法, 识别和保留每个LD块中最重要的SNP（最低p值）
 }
 
 # Apply function to raw epigenetic age acceleration datasets
