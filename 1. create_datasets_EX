@@ -29,7 +29,7 @@ pacman::p_load("MRInstruments", "TwoSampleMR", "tidyverse", "dplyr", "ggpubr", "
 # Output in two-sample MR format
 # NOTE: this takes really long if run in RStudio
 exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_func
-  x <- read.table(file = file, header = T)  # 读取Exposures txt文件，第一行为变量名
+  x <- read.table(file = file, header = T)  # 读取Exposures GWAS txt文件，第一行为变量名
   x$pheno <- "DNA methylation ageing"      #给pheno列赋值
   x <- format_data(x, type = "exposure",   #调用MRinstrumentsR包中format_date函数，将输入文件格式进行调整
                    phenotype_col = "pheno",
