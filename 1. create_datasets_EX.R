@@ -44,9 +44,19 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
                    chr_col = "chr", 
                    pos_col = "bp")
   x$id.exposure <- data_name                              #在最后一列加入Clock Age标签，用于clump_data
-  x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)  # 调用TwoSampleMR R包中clump_data函数，用PLINK clumping法, 识别和保留每个LD块中最重要的SNP（最低p值）
-}
+#---------------------------------------------------------------------#
+#    Clump running error, clumping on each chromosome separately      #
+#---------------------------------------------------------------------#
+  #x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)  # 调用TwoSampleMR R包中clump_data函数，用PLINK clumping法, 识别和保留每个LD块中最重要的SNP（最低p值）
 
+for (i in 1:22){
+  result <- split(x, x$chr)
+  assign(paste0(file,"_chr",i,sep=""),clump_data(result[[i]], clump_p1 = 5e-08, clump_p2 = 5e-08)
+         
+  #outputfile <- paste(file,"_chr",i,sep="")
+  #write.table(result[[i]],file=outputfile,sep=sep)
+}
+}
 # Apply function to raw epigenetic age acceleration datasets
 GrimAge_exp_dat <- exposure_func("GrimAge","GrimAge_EUR_summary_statistics.txt", "rsID")
 Hannum_exp_dat <- exposure_func("Hannum","Hannum_EUR_summary_statistics.txt", "roblrsID")
