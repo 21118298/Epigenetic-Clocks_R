@@ -43,7 +43,7 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
                    samplesize_col = "N", 
                    chr_col = "chr", 
                    pos_col = "bp")
-  x$id.exposure <- data_name                              #在最后一列加入Clock Age标签，用于clump_data
+  x$id.exposure <- data_name                              #在最后一列加入Clock Age标签
   x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)  # 调用TwoSampleMR R包中clump_data函数，用PLINK clumping法, 识别和保留每个LD块中最重要的SNP（最低p值), 
   # p-value < 5*10-8, r2 <0.001(default), 该函数与OpenGWAS API进行交互，存储了千人基因组中5个群体（EUR, SAS, EAS, AFR, AMR）的LD数据。Defult = EUR(European reference)
 }
