@@ -68,8 +68,14 @@ exp_dat <- rbind(GrimAge_exp_dat, Hannum_exp_dat, IEAA_exp_dat, PhenoAge_exp_dat
 exp_dat$r2 <- (2 * (exp_dat$beta.exposure^2) * exp_dat$eaf.exposure * (1 - exp_dat$eaf.exposure)) /
   (2 * (exp_dat$beta.exposure^2) * exp_dat$eaf.exposure * (1 - exp_dat$eaf.exposure) +
      2 * exp_dat$samplesize.exposure * exp_dat$eaf.exposure * 
-     (1 - exp_dat$eaf.exposure) * exp_dat$se.exposure^2)
+     (1 - exp_dat$eaf.exposure) * exp_dat$se.exposure^2) 
+#
+#R2 = (2β2×MAF×(1-MAF))/(2β2×MAF×(1-MAF)+ 2 N × MAF × (1-MAF) ×SE2) where MAF = effect allele frequency, β = effect estimate of the SNP in the exposure GWAS,SE = standard error, N = sample size
+#
 exp_dat$F <- exp_dat$r2 * (exp_dat$samplesize.exposure - 2) / (1 - exp_dat$r2)
+#
+#F = (R2×(N-2))/(1-R2) 
+#
 #method 2
 # exp_dat$F_stat <- exp_dat$beta.exposure^2 / exp_dat$se.exposure^2
 # exp_dat$R2_stat <- exp_dat$F_stat/(exp_dat$samplesize.exposure-2+exp_dat$F_stat)
