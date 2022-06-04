@@ -48,23 +48,23 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
   # p-value < 5*10-8, r2 <0.001(default), 该函数与OpenGWAS API进行交互，存储了千人基因组中5个群体（EUR, SAS, EAS, AFR, AMR）的LD数据。Defult = EUR(European reference)
 }
 # Apply function to raw epigenetic age acceleration datasets
-GrimAge_exp_dat <- exposure_func("GrimAge","GrimAge_EUR_summary_statistics.txt", "rsID")
-Hannum_exp_dat <- exposure_func("Hannum","Hannum_EUR_summary_statistics.txt", "roblrsID")
-IEAA_exp_dat <- exposure_func("IEAA","IEAA_EUR_summary_statistics.txt", "rsID")
-PhenoAge_exp_dat <- exposure_func("PhenoAge","PhenoAge_EUR_summary_statistics.txt", "rsID")
+GrimAge_exp_dat <- exposure_func("GrimAge","GrimAge_EUR_summary_statistics.txt", "rsID") #执行GrimAge
+Hannum_exp_dat <- exposure_func("Hannum","Hannum_EUR_summary_statistics.txt", "roblrsID") #执行Hannum
+IEAA_exp_dat <- exposure_func("IEAA","IEAA_EUR_summary_statistics.txt", "rsID")           #执行IEAA
+PhenoAge_exp_dat <- exposure_func("PhenoAge","PhenoAge_EUR_summary_statistics.txt", "rsID") #执行PhenoAge
 
 #combine exposures
-exp_dat <- rbind(GrimAge_exp_dat, Hannum_exp_dat, IEAA_exp_dat, PhenoAge_exp_dat)
+exp_dat <- rbind(GrimAge_exp_dat, Hannum_exp_dat, IEAA_exp_dat, PhenoAge_exp_dat) #合并结果，HannumAge (9 SNPs)), Horvath Intrinsic Age (24 SNPs), PhenoAge (11 SNPs), and GrimAge (4 SNPs)
 
 #save unique list of SNPs
 #write.table(unique(exp_dat$SNP), "SNP_list.txt", row.names = F, col.names = F)
 
 #---------------------------------------------------------------------#
-#                          R2 and F-statistic                         #----
+#                          R2 and F-statistic                         #----显著性检验，用来检验结果精密度偶然误差
 #---------------------------------------------------------------------#
 
-# Calculate R2 and F statistics for each exposure dataset
-#method 1
+# Calculate R2 and F statistics for each exposure dataset（R2检验和F检验）
+#method 1（R2检验和F检验的计算公式）
 exp_dat$r2 <- (2 * (exp_dat$beta.exposure^2) * exp_dat$eaf.exposure * (1 - exp_dat$eaf.exposure)) /
   (2 * (exp_dat$beta.exposure^2) * exp_dat$eaf.exposure * (1 - exp_dat$eaf.exposure) +
      2 * exp_dat$samplesize.exposure * exp_dat$eaf.exposure * 
@@ -74,19 +74,19 @@ exp_dat$F <- exp_dat$r2 * (exp_dat$samplesize.exposure - 2) / (1 - exp_dat$r2)
 # exp_dat$F_stat <- exp_dat$beta.exposure^2 / exp_dat$se.exposure^2
 # exp_dat$R2_stat <- exp_dat$F_stat/(exp_dat$samplesize.exposure-2+exp_dat$F_stat)
 
-# Calculate total R2 for each exposure dataset 
+# Calculate total R2 for each exposure dataset （计算每个clock的R2之和）
 r2_func <- function(id)
 {
   x <- exp_dat[which(exp_dat$id.exposure==id),]
   sum(x$r2, na.rm = T)
 }
 
-variance_GrimAge <- r2_func("GrimAge") # 0.47%
-variance_Hannum <- r2_func("Hannum") # 1.48%
-variance_IEAA <- r2_func("IEAA") # 4.41%
-variance_PhenoAge <- r2_func("PhenoAge") #1.86%
+variance_GrimAge <- r2_func("GrimAge") # GrimAgeSNP R2之和为 0.47%
+variance_Hannum <- r2_func("Hannum") # Hannum R2之和为1.48%
+variance_IEAA <- r2_func("IEAA") # IEAASNP R2之和为4.41%
+variance_PhenoAge <- r2_func("PhenoAge") #PhenoAgeSNP R2之和为1.86%
 
-# Calculate minimum F-statistic for each exposure dataset 
+# Calculate minimum F-statistic for each exposure dataset （计算每个clock的F检验最小值）
 Fmin_func <- function(id)
 {
   x <- exp_dat[which(exp_dat$id.exposure==id),]
@@ -98,7 +98,7 @@ Fmin_Hannum <- Fmin_func("Hannum") # 31
 Fmin_IEAA <- Fmin_func("IEAA") # 31
 Fmin_PhenoAge <- Fmin_func("PhenoAge") # 32 
 
-# Calculate maximum F-statistic for each exposure dataset 
+# Calculate maximum F-statistic for each exposure dataset （计算每个clock的F检验最大值）
 Fmax_func <- function(id)
 {
   x <- exp_dat[which(exp_dat$id.exposure==id),]
@@ -110,7 +110,7 @@ Fmax_Hannum <- Fmax_func("Hannum") # 99
 Fmax_IEAA <- Fmax_func("IEAA") # 240
 Fmax_PhenoAge <- Fmax_func("PhenoAge") # 89 
 
-# Calculate median F-statistic for each exposure dataset 
+# Calculate median F-statistic for each exposure dataset （计算每个clock的F检验中位数）
 Fmedian_func <- function(id)
 {
   x <- exp_dat[which(exp_dat$id.exposure==id),]
