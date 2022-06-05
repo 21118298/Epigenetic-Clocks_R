@@ -66,16 +66,16 @@ s <- find_missing_SNP(lung_cancer_exallc)
 
 count(s) #check how many snps are in list #有多少
 s$SNP #see list of snps                   #列出SNP ID
-s[1,1] #see snp missing n#1               
+s[1,1] #see snp missing n#1               #列出rs ID，用于LDLINK
 s[2,1] #see snp missing n#2
 s[3,1] #see snp missing n#3
 s[4,1] #see snp missing n#4
 
 #---------------------------------------------------------------------#
-#                    Find proxies for these snps                      #----
+#                    Find proxies for these snps                      #----outcome GWAS找不到的SNP，可以选择与其在同一连锁不平衡区域中合适的SNP (proxy) 
 #---------------------------------------------------------------------#
 
-# Function to find LD proxy using LDLINK
+# Function to find LD proxy using LDLINK 利用LDLINK tool,找到与targetSNP连锁不平衡的合适SNP
 find_LD_proxy <- function(snps_need_proxy) {
                               proxy <- (LDproxy(snps_need_proxy[1,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[c(1,4),] 
                               proxy$original <- snps_need_proxy[1,1]
@@ -86,7 +86,7 @@ find_LD_proxy <- function(snps_need_proxy) {
                               proxy4 <- (LDproxy(snps_need_proxy[4,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,] 
                               proxy4$original <- snps_need_proxy[4,1]
                               proxies <- rbind(proxy, proxy2, proxy3, proxy4)
-                              proxies
+                              proxies 
                               # we could change number of proxies we want to find
 }
 
@@ -99,7 +99,7 @@ a[8,1] #see proxy snp (for snp missing n#4)
 # We need to make sure the identified proxy SNPs are available in outcome dataset before continuing 
 # Here, we used the terminal to do this (e.g., zcat finngen_R5_C3_BREAST_EXALLC.gz | grep rs290794)
 # If SNPs aren't available, you need to find the next best proxy for the missing SNP
-
+#查看找到的proxy是否存在于outcome文件中，如果没有，还要继续寻找合适的SNP
 
 # List all SNPs included in the outcome dataset, including proxies for those that are missing
 # This can then be used to extract data related to these SNPs using grep in the terminal
@@ -123,7 +123,7 @@ all <- read.table("FINNGEN_SNP_list_inc_proxies.txt", header = F)
 #---------------------------------------------------------------------#
 #                       Back to R -> Format data first                #----
 #---------------------------------------------------------------------#
-# Function to format data (two-sample MR format)
+# Function to format data (two-sample MR format) 调整outcome_include proxiesSNP文件的格式，用于之后的MR分析
 # Here, it is important to use the format_data function using the SNP list including proxies, not the original SNP list
 out_func_FINNGEN_proxies <- function(file, name)
 {
@@ -143,14 +143,14 @@ out_func_FINNGEN_proxies <- function(file, name)
   outcome_var$outcome <- name
   return(outcome_var)
 }
-
+#各个肿瘤数据库的outcome_include proxiesSNP文件的格式的调整。
 lung_cancer_exallc_proxies <- out_func_FINNGEN_proxies("lung_exallc", "lung cancer (excluding cancer in controls)")
 breast_cancer_exallc_proxies <- out_func_FINNGEN_proxies("breast_exallc", "breast cancer (excluding cancer in controls)")
 colorectal_cancer_exallc_proxies <- out_func_FINNGEN_proxies("colorectal_exallc", "colorectal cancer (excluding cancer in controls)")
 ovarian_cancer_exallc_proxies <- out_func_FINNGEN_proxies("ovary_exallc", "ovarian cancer (excluding cancer in controls)")
 prostate_cancer_exallc_proxies <- out_func_FINNGEN_proxies("prostate_exallc", "prostate cancer (excluding cancer in controls)")
 
-
+#再确认下有没有丢掉的SNP
 # Find list of SNPs in the proxy dataset that are missing from the outcome dataset, 
 # just to make sure that we aren't missing any SNPs before moving on to the next step
 find_missing_SNP_proxy <- function(out_dat) {
@@ -224,9 +224,3 @@ write.table(ovarian_cancer_exallc_new, "finngen_ovarian_exallc_replaced_proxies.
 write.table(prostate_cancer_exallc_new, "finngen_prostate_exallc_replaced_proxies.txt", sep = " ", row.names = F, col.names = T)
 write.table(lung_cancer_exallc_new, "finngen_lung_exallc_replaced_proxies.txt", sep = " ", row.names = F, col.names = T)
 write.table(colorectal_cancer_exallc_new, "finngen_colorectal_exallc_replaced_proxies.txt", sep = " ", row.names = F, col.names = T)
-
-
-
-© 2022 GitHub, Inc.
-Terms
-Priva
