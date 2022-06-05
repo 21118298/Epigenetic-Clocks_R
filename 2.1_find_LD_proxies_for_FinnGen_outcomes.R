@@ -26,14 +26,14 @@ pacman::p_load("MRInstruments", "TwoSampleMR", "tidyverse", "dplyr", "ggpubr", "
 #---------------------------------------------------------------------#
 
 # Read exposure
-exp_dat <- read.table("exp_data.txt", header = T)
+exp_dat <- read.table("exp_data.txt", header = T) #打开Exposure文件
 
 # Function to read outcome
-out_func_FINNGEN <- function(file, name)
+out_func_FINNGEN <- function(file, name)  # 定义out_func_FINNGEN
 {
   # Extract outcome SNPs matching the SNPs in the exposure dataset
-  outcome_var <- read.table(paste("finngen_", file,".txt", sep = ""), 
-                            header = T) %>% format_data(snps = exp_dat$SNP, 
+  outcome_var <- read.table(paste("finngen_", file,".txt", sep = ""),  # 打开outcome GWAS txt文件，传递给format_data函数调整格式，
+                            header = T) %>% format_data(snps = exp_dat$SNP,  #把outcome SNP列替换成Exposure文件的SNP列
                                                         type = "outcome", 
                                                         snp_col = "rsids", 
                                                         beta_col = "beta", 
@@ -44,28 +44,29 @@ out_func_FINNGEN <- function(file, name)
                                                         pos_col = "pos",
                                                         eaf_col = "maf", 
                                                         pval_col = "pval")
-  outcome_var$outcome <- name
+  outcome_var$outcome <- name  #最后一列传入参数
   return(outcome_var)
 }
 
 # Read FinnGen outcome (all finngen datasets are missing the same SNPs, 
 # so we can find proxies for only one of the outcomes)
-lung_cancer_exallc <- out_func_FINNGEN("lung_exallc", "lung cancer (excluding cancer in controls)")
+lung_cancer_exallc <- out_func_FINNGEN("lung_exallc", "lung cancer (excluding cancer in controls)") #将Finngen_lung_exallc调整格式
 
 #---------------------------------------------------------------------#
-#              Identify SNPs that need proxies                        #----
+#              Identify SNPs that need proxies                        #----exposureSNP只有1个在Finngen的数据库中被找到。其余missing的SNPs需要proxies。
 #---------------------------------------------------------------------#
 
 # Function to find list of snps in exposure dataset that are missing from the outcome dataset
 find_missing_SNP <- function(out_dat) {
-                                        snps_need_proxy <- subset(exp_dat, !(exp_dat$SNP %in% out_dat$SNP))
+                                        snps_need_proxy <- subset(exp_dat, !(exp_dat$SNP %in% out_dat$SNP)) #列出没有匹配的剩余的snp
+  
 }
 
 s <- find_missing_SNP(lung_cancer_exallc) 
 
-count(s) #check how many snps are in list
-s$SNP #see list of snps
-s[1,1] #see snp missing n#1
+count(s) #check how many snps are in list #有多少
+s$SNP #see list of snps                   #列出SNP ID
+s[1,1] #see snp missing n#1               
 s[2,1] #see snp missing n#2
 s[3,1] #see snp missing n#3
 s[4,1] #see snp missing n#4
