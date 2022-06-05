@@ -34,15 +34,15 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
   x <- format_data(x, type = "exposure",   #调用TwoSampleMR R包中format_date函数，将输入文件格式进行调整，以适用于MR分析
                    phenotype_col = "pheno",    #定义phenotype_col在输入文件中的对应列
                    snp_col = SNP,              #定义snp_col在输入文件中的对应列，SNP由参数传入
-                   beta_col = "Effect",        #同上
-                   se_col = "SE", 
-                   eaf_col = "Freq1", 
-                   effect_allele_col = "A1", 
-                   other_allele_col = "A2", 
-                   pval_col = "P", 
-                   samplesize_col = "N", 
-                   chr_col = "chr", 
-                   pos_col = "bp")
+                   beta_col = "Effect",        #同上,The effect size. If the trait is binary then log(OR) should be used
+                   se_col = "SE",              #The standard error of the effect size
+                   eaf_col = "Freq1",          #The effect allele frequency
+                   effect_allele_col = "A1",   #The allele of the SNP which has the effect marked in beta
+                   other_allele_col = "A2",     #The non-effect allele
+                   pval_col = "P",              #The P-value for the SNP’s association with the exposure
+                   samplesize_col = "N",        #Sample size for estimating the effect size
+                   chr_col = "chr",             #Physical position of variant (chromosome)
+                   pos_col = "bp")              #Physical position of variant (position)
   x$id.exposure <- data_name                              #在最后一列加入Clock Age标签
   x <- clump_data(x, clump_p1 = 5e-08, clump_p2 = 5e-08)  # 调用TwoSampleMR R包中clump_data函数，用PLINK clumping法, 识别和保留每个LD块中最重要的SNP（最低p值), 
   # p-value < 5*10-8, r2 <0.001(default), 该函数与OpenGWAS API进行交互，存储了千人基因组中5个群体（EUR, SAS, EAS, AFR, AMR）的LD数据。Defult = EUR(European reference)
@@ -60,7 +60,7 @@ exp_dat <- rbind(GrimAge_exp_dat, Hannum_exp_dat, IEAA_exp_dat, PhenoAge_exp_dat
 #write.table(unique(exp_dat$SNP), "SNP_list.txt", row.names = F, col.names = F)
 
 #---------------------------------------------------------------------#
-#                          R2 and F-statistic                         #----显著性检验，用来检验结果精密度偶然误差
+#                          R2 and F-statistic                         #----显著性检验，用来检验结果精密度和偶然误差
 #---------------------------------------------------------------------#
 
 # Calculate R2 and F statistics for each exposure dataset（R2检验和F检验）
