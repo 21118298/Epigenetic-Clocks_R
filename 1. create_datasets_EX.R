@@ -33,11 +33,11 @@ exposure_func <- function(data_name, file, SNP) {   #自定义函数exposure_fun
   x$pheno <- "DNA methylation ageing"      #给pheno整列赋值
   x <- format_data(x, type = "exposure",   #调用TwoSampleMR R包中format_date函数，将输入文件格式进行调整，以适用于MR分析
                    phenotype_col = "pheno",    #定义phenotype_col在输入文件中的对应列
-                   snp_col = SNP,              #定义snp_col在输入文件中的对应列，SNP由参数传入
-                   beta_col = "Effect",        #同上,The effect size. If the trait is binary then log(OR) should be used
-                   se_col = "SE",              #The standard error of the effect size
+                   snp_col = SNP,              #定义snp_col在输入文件中的对应列，SNP由参数传入，*必要
+                   beta_col = "Effect",        #同上,The effect size. If the trait is binary then log(OR) should be used*必要
+                   se_col = "SE",              #The standard error of the effect size*必要
                    eaf_col = "Freq1",          #The effect allele frequency
-                   effect_allele_col = "A1",   #The allele of the SNP which has the effect marked in beta
+                   effect_allele_col = "A1",   #The allele of the SNP which has the effect marked in beta*必要
                    other_allele_col = "A2",     #The non-effect allele
                    pval_col = "P",              #The P-value for the SNP’s association with the exposure
                    samplesize_col = "N",        #Sample size for estimating the effect size
