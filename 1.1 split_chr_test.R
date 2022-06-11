@@ -1,8 +1,8 @@
 for (i in 1:22){                   #先查看这个文件染色体列unique值，发现没有X，Y。因此循环从1到22
-  result <- split(x, x$chr)          #由于clump_data,timeout issue,解决办法按染色体分割
+  result <- split(x, x$chr)          #由于clump_data函数有timeout 300 seconds issue, 查看github解决办法按染色体分割
   #x <- rbind(assign(paste0(file,"_chr",i,sep=""),subset(result[[i]], pval.exposure < 5e-08)))
   write.table(result[[i]], file = paste0("abc_chr",i,sep=""), quote = FALSE, row.names = FALSE) #按染色体出文件，备用
-  newdata <-subset(result[[i]], pval.exposure < 5e-08)                                          #直接clump_data()染色体文件报错，因此先筛选pvalue<5e-08,再clump
+  newdata <-subset(result[[i]], pval.exposure < 5e-08)                                          #直接clump_data()染色体文件报错 trafficing的问题，因此先筛选 pvalue<5e-08,再clump
   y <- clump_data(newdata, clump_p1 = 5e-08, clump_p2 = 5e-08)                                  #clump
   write.table(y, file = paste0(file,"_chr",i,sep=""), quote = FALSE, row.names = FALSE)         #出文件，备用
   }
