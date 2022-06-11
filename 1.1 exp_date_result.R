@@ -33,3 +33,5 @@ Fmax_GrimAge = 45.49084          #文献为45
 Fmedian_GrimAge= 35.88859        #文献为36
 
 Step1复现成功。
+
+结果意义：在GrimAge GWAS中筛选pvalue<5*10-8,连锁不平衡的位点，用于TwoSampleMR分析。r2和F检验验证位点的显著性和精确性。
