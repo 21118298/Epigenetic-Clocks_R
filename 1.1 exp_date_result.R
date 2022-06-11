@@ -8,7 +8,7 @@ for (i in 1:22){                   #先查看这个文件染色体列unique值�
   }
   z <- rbind(chr6,chr17,chr10) 
 
-  最后的结果是4条 GrimAge，与文献所述相同，结果如下：
+一、最后的结果是4条 GrimAge，与文献所述相同，结果如下：
 
           SNP chr.exposure pos.exposure effect_allele.exposure other_allele.exposure eaf.exposure beta.exposure se.exposure 
 1   rs4065321           17     38143548                      T                     C       0.5333       -0.1703      0.0296
@@ -21,3 +21,11 @@ for (i in 1:22){                   #先查看这个文件染色体列unique值�
 11     1.640e-11               32418 DNA_methylation_ageing             TRUE             reported     GrimAge
 23     5.092e-10               30674 DNA_methylation_ageing             TRUE             reported     GrimAge
 12     2.547e-08               31838 DNA_methylation_ageing             TRUE             reported     GrimAge
+
+二、进行r2和F检验结果，均与文献所述相同。
+variance_GrimAge = 0.004655256， #文献为0.47%
+Fmin_GrimAge = 31.05365，        #文献为31
+Fmax_GrimAge = 45.49084          #文献为45
+Fmedian_GrimAge= 35.88859        #文献为36
+
+Step1复现成功。
