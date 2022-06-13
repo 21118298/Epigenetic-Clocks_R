@@ -1,4 +1,8 @@
-结果：
+1）Finngen并没有在MR-Base platform。 因此需要用‘LDlinkR’ R package version 1.1.2 to find proxies。
+
+结果意义：利用LDlinkR-LDproxy找到Exposore GrimAge4个SNP在所有Finngen5个癌种的GWASdataset都存在的proxy。(5个癌种breast,prostate, colorectal, ovarian and lung cancers)
+
+结果如下1，3，5，7为original，2，4，6，8为proxy：
     RS_Number           Coord Alleles    MAF Distance Dprime     R2 Correlated_Alleles RegulomeDB Function   original
 1   rs4065321  chr17:38143548   (C/T) 0.4642        0      1 1.0000            C=C,T=T          5     <NA>  rs4065321
 4  rs12453764  chr17:38144187   (T/C) 0.4642      639      1 1.0000            C=T,T=C          7     <NA>  rs4065321
@@ -8,3 +12,4 @@
 21  rs1265155   chr6:31143694   (G/A) 0.3877      183      1 0.9203            G=G,A=A         2b     <NA>   rs887466
 13 rs17094148 chr10:101280279   (A/G) 0.3022        0      1 1.0000            A=A,G=G          4     <NA> rs17094148
 22 rs11190133 chr10:101278725   (C/T) 0.3022    -1554      1 1.0000            A=C,G=T          5     <NA> rs17094148
+
