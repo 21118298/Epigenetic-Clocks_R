@@ -49,11 +49,11 @@ out_func_FINNGEN <- function(file, name)  # 定义out_func_FINNGEN
 }
 
 # Read FinnGen outcome (all finngen datasets are missing the same SNPs, 
-# so we can find proxies for only one of the outcomes)
-lung_cancer_exallc <- out_func_FINNGEN("lung_exallc", "lung cancer (excluding cancer in controls)") #将Finngen_lung_exallc调整格式
+# so we can find proxies for only one of the outcomes) #Finngen所有datasets都文件都没有找到exp_dat中这四个GrimAge的SNP。所以这里我们只用任意一个finngen dataset去找proxy就行。
+lung_cancer_exallc <- out_func_FINNGEN("lung_exallc", "lung cancer (excluding cancer in controls)") #这里选择了对finngen_lung_exallc文件调格式，用于LDlinkR -LDproxy
 
 #---------------------------------------------------------------------#
-#              Identify SNPs that need proxies                        #----exposureSNP只有1个在Finngen的数据库中被找到。其余missing的SNPs需要proxies。
+#              Identify SNPs that need proxies                        #----exposureSNP missing的SNPs需要proxies。
 #---------------------------------------------------------------------#
 
 # Function to find list of snps in exposure dataset that are missing from the outcome dataset
@@ -66,7 +66,7 @@ s <- find_missing_SNP(lung_cancer_exallc)
 
 count(s) #check how many snps are in list #有多少
 s$SNP #see list of snps                   #列出SNP ID
-s[1,1] #see snp missing n#1               #列出rs ID，用于LDLINK
+s[1,1] #see snp missing n#1               #列出rs ID，一共四个，用于LDlinkR
 s[2,1] #see snp missing n#2
 s[3,1] #see snp missing n#3
 s[4,1] #see snp missing n#4
@@ -75,29 +75,29 @@ s[4,1] #see snp missing n#4
 #                    Find proxies for these snps                      #----outcome GWAS找不到的SNP，可以选择与其在同一连锁不平衡区域中合适的SNP (proxy) 
 #---------------------------------------------------------------------#
 
-# Function to find LD proxy using LDLINK 利用LDLINK tool,找到与targetSNP连锁不平衡的合适SNP
-find_LD_proxy <- function(snps_need_proxy) {
-                              proxy <- (LDproxy(snps_need_proxy[1,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[c(1,4),] 
-                              proxy$original <- snps_need_proxy[1,1]
-                              proxy2 <- (LDproxy(snps_need_proxy[2,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,] 
+# Function to find LD proxy using LDLINK                   利用LDLINK tool,找到与targetSNP连锁不平衡的合适SNP
+find_LD_proxy <- function(snps_need_proxy) {               #"EUR"指参考基因组的人种，“EUR”（欧洲人）,"r2"是评估LD的指标，参数token是注册申请的身份ID
+                              proxy <- (LDproxy(snps_need_proxy[1,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[c(1,4),]  #取结果的第一行和第四行（第二、三行的rsID are NOT available in other outcome dataset）
+                              proxy$original <- snps_need_proxy[1,1]     # 第一行rsID赋值于original列
+                              proxy2 <- (LDproxy(snps_need_proxy[2,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,]  #取结果的第一行和第二行
                               proxy2$original <- snps_need_proxy[2,1]
                               proxy3 <- (LDproxy(snps_need_proxy[3,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,] 
                               proxy3$original <- snps_need_proxy[3,1]
                               proxy4 <- (LDproxy(snps_need_proxy[4,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,] 
                               proxy4$original <- snps_need_proxy[4,1]
-                              proxies <- rbind(proxy, proxy2, proxy3, proxy4)
+                              proxies <- rbind(proxy, proxy2, proxy3, proxy4) #合并结果
                               proxies 
                               # we could change number of proxies we want to find
 }
 
-a <- find_LD_proxy(s)
+a <- find_LD_proxy(s)                         #original在1，3，5，7行，proxy在2，4，6，8行
 a[2,1] #see proxy snp (for snp missing n#1)
 a[4,1] #see proxy snp (for snp missing n#2)
 a[6,1] #see proxy snp (for snp missing n#3)
 a[8,1] #see proxy snp (for snp missing n#4)
 
 # We need to make sure the identified proxy SNPs are available in outcome dataset before continuing 
-# Here, we used the terminal to do this (e.g., zcat finngen_R5_C3_BREAST_EXALLC.gz | grep rs290794)
+# Here, we used the terminal to do this (e.g., zcat finngen_R5_C3_BREAST_EXALLC.gz | grep rs290794)  终端遍历所有finngen dataset，确保找到的proxy在所有dataset存在
 # If SNPs aren't available, you need to find the next best proxy for the missing SNP
 #查看找到的proxy是否存在于outcome文件中，如果没有，还要继续寻找合适的SNP
 
@@ -108,7 +108,7 @@ list_all_snps<- function(out_dat, proxy) {
                                           proxy_snp <- proxy[c(2,4,6,8),1]
                                           all_snps <- c(exp_snps, proxy_snp)
 }
-all <- list_all_snps(lung_cancer_exallc, a)
+all <- list_all_snps(lung_cancer_exallc, a)  #列出所有exp_snps和proxy_snprsID
 
 write.table(all, "FINNGEN_SNP_list_inc_proxies.txt", quote = F, sep = " ", col.names = F, row.names = F)
 all <- read.table("FINNGEN_SNP_list_inc_proxies.txt", header = F)
