@@ -76,7 +76,7 @@ s[4,1] #see snp missing n#4
 #---------------------------------------------------------------------#
 
 # Function to find LD proxy using LDLINK                   利用LDLINK tool,找到与targetSNP连锁不平衡的合适SNP
-find_LD_proxy <- function(snps_need_proxy) {               #"EUR"指参考基因组的人种，“EUR”（欧洲人）,"r2"是评估LD的指标，参数token是注册申请的身份ID
+find_LD_proxy <- function(snps_need_proxy) {               #"EUR"指参考基因组的人种，“EUR”（欧洲人）,r2>0.8，参数token是注册申请的身份ID
                               proxy <- (LDproxy(snps_need_proxy[1,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[c(1,4),]  #取结果的第一行和第四行（第二、三行的rsID are NOT available in other outcome dataset）
                               proxy$original <- snps_need_proxy[1,1]     # 第一行rsID赋值于original列
                               proxy2 <- (LDproxy(snps_need_proxy[2,1], "EUR", "r2", token = Sys.getenv("LDLINK_TOKEN"), file = F))[1:2,]  #取结果的第一行和第二行
@@ -117,7 +117,7 @@ all <- read.table("FINNGEN_SNP_list_inc_proxies.txt", header = F)
 #---------------------------------------------------------------------#
 #Example:
 #zcat finngen_R5_C3_BRONCHUS_LUNG_EXALLC.gz | grep -w -F -f FINNGEN_SNP_list_inc_proxies.txt -e rsids > finngen_lung_exallc_inc_proxies.txt 
-
+#利用终端、Lunix命令，把这些proxy在各个癌种文件中的那行输出
         # Use nano finngen_lung_exallc_inc_proxies.txt to remove hashtag in column names before using the grep command
 
 #---------------------------------------------------------------------#
