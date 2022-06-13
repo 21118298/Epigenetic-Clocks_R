@@ -13,3 +13,7 @@
 13 rs17094148 chr10:101280279   (A/G) 0.3022        0      1 1.0000            A=A,G=G          4     <NA> rs17094148
 22 rs11190133 chr10:101278725   (C/T) 0.3022    -1554      1 1.0000            A=C,G=T          5     <NA> rs17094148
 
+for (i in c(6,10,17)){                  
+   result <- split(x, x$chrom)
+   write.table(result[[i]], file = paste0("lung_chr",i,sep=""), quote = FALSE, row.names = FALSE)
+}
