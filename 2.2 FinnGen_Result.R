@@ -7,6 +7,8 @@ result <- split(x, x$chrom)
 for (i in c(6,10,17)){                  
    write.table(result[[i]], file = paste0("lung_chr",i,sep=""), quote = FALSE, row.names = FALSE)
 }
+newdata <- rbind(result[[6]],result[[10]],result[[17]])
+write.table(nenwdata, file = paste0("finngen_lung_filter.txt"), quote = FALSE, row.names = FALSE)
 
 结果意义：利用LDlinkR-LDproxy找到Exposore GrimAge4个SNP在所有Finngen5个癌种的GWASdataset都存在的proxy。(5个癌种breast,prostate, colorectal, ovarian and lung cancers)
 
