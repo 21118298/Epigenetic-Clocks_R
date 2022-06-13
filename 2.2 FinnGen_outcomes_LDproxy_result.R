@@ -1,4 +1,12 @@
-1）Finngen并没有在MR-Base platform。 因此需要用‘LDlinkR’ R package version 1.1.2 to find proxies。
+一、Finngen并没有在MR-Base platform，因此需要用‘LDlinkR’ R package to find proxies。
+
+#finngen dataset过大，运行过慢。所以每个癌种按染色体拆分，只留下chr6，chr10，chr17三条相关染色体文件合并。
+
+x <- read.table("finngen_LUNG_EXALLC.txt",col.names = c("chrom","pos","ref","alt","rsids","nearest_genes","pval","mlogp","beta","sebeta","maf","maf_cases","maf_controls"), sep = "\t")
+for (i in c(6,10,17)){                  
+   result <- split(x, x$chrom)
+   write.table(result[[i]], file = paste0("lung_chr",i,sep=""), quote = FALSE, row.names = FALSE)
+}
 
 结果意义：利用LDlinkR-LDproxy找到Exposore GrimAge4个SNP在所有Finngen5个癌种的GWASdataset都存在的proxy。(5个癌种breast,prostate, colorectal, ovarian and lung cancers)
 
@@ -13,7 +21,3 @@
 13 rs17094148 chr10:101280279   (A/G) 0.3022        0      1 1.0000            A=A,G=G          4     <NA> rs17094148
 22 rs11190133 chr10:101278725   (C/T) 0.3022    -1554      1 1.0000            A=C,G=T          5     <NA> rs17094148
 
-for (i in c(6,10,17)){                  
-   result <- split(x, x$chrom)
-   write.table(result[[i]], file = paste0("lung_chr",i,sep=""), quote = FALSE, row.names = FALSE)
-}
