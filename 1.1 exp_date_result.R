@@ -1,10 +1,10 @@
+result <- split(x, x$chr)          #由于运行clump_data函数遇到timeout 300 seconds issue, 解决办法按染色体分割
 for (i in 1:22){                   #先查看这个文件染色体列unique值，发现没有X，Y。因此循环从1到22
-  result <- split(x, x$chr)          #由于clump_data函数有timeout 300 seconds issue, 查看github解决办法按染色体分割
-  #x <- rbind(assign(paste0(file,"_chr",i,sep=""),subset(result[[i]], pval.exposure < 5e-08)))
   write.table(result[[i]], file = paste0("abc_chr",i,sep=""), quote = FALSE, row.names = FALSE) #按染色体出文件，备用
   newdata <-subset(result[[i]], pval.exposure < 5e-08)                                          #直接clump_data()染色体文件报错 trafficing的问题，因此先筛选 pvalue<5e-08,再clump
   y <- clump_data(newdata, clump_p1 = 5e-08, clump_p2 = 5e-08)                                  #clump
   write.table(y, file = paste0(file,"_chr",i,sep=""), quote = FALSE, row.names = FALSE)         #出文件，备用
+  #x <- rbind(assign(paste0(file,"_chr",i,sep=""),subset(result[[i]], pval.exposure < 5e-08)))
   }
   z <- rbind(chr6,chr17,chr10) 
 
@@ -34,4 +34,4 @@ Fmedian_GrimAge= 35.88859        #文献为36
 
 Step1复现成功。
 
-结果意义：在GrimAge GWAS中筛选pvalue<5*10-8,连锁不平衡的位点，用于TwoSampleMR分析。r2和F检验验证位点的显著性和精确性。
+结果意义：在GrimAge GWAS中筛选pvalue<5*10-8,连锁不平衡的位点，用于TwoSampleMR分析。r2和F检验验证所得位点的显著性和精确性。
