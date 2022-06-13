@@ -1,22 +1,11 @@
-data_FINNGEN <- harmonise_data(
-   exposure_dat = exp_dat, 
-   outcome_dat = outcome
- )
-Harmonising DNA_methylation_ageing (GrimAge) and lung cancer (excluding cancer in controls) (zIV0uA)
-Removing the following SNPs for incompatible alleles:
-rs4065321
-> results_FINNGEN <- mr(data_FINNGEN, method_list = c("mr_ivw", "mr_egger_regression", 
-                                         "mr_weighted_median", "mr_weighted_mode"))
-Analysing 'GrimAge' on 'zIV0uA'
+结果如下：
+id.exposure id.outcome                                    outcome               exposure                    method nsnp           b         se      pval
+1     GrimAge     1stH7R lung cancer (excluding cancer in controls) DNA_methylation_ageing Inverse variance weighted    4  0.08087056 0.10288551 0.4318530
+2     GrimAge     1stH7R lung cancer (excluding cancer in controls) DNA_methylation_ageing                  MR Egger    4  2.84249600 1.20909319 0.1430953
+3     GrimAge     1stH7R lung cancer (excluding cancer in controls) DNA_methylation_ageing           Weighted median    4  0.11590759 0.08704695 0.1830073
+4     GrimAge     1stH7R lung cancer (excluding cancer in controls) DNA_methylation_ageing             Weighted mode    4  0.16921787 0.12305455 0.2627859
 
-> results_FINNGEN
-  id.exposure id.outcome                                    outcome               exposure                    method nsnp
-1     GrimAge     zIV0uA lung cancer (excluding cancer in controls) DNA_methylation_ageing Inverse variance weighted    3
-2     GrimAge     zIV0uA lung cancer (excluding cancer in controls) DNA_methylation_ageing                  MR Egger    3
-3     GrimAge     zIV0uA lung cancer (excluding cancer in controls) DNA_methylation_ageing           Weighted median    3
-4     GrimAge     zIV0uA lung cancer (excluding cancer in controls) DNA_methylation_ageing             Weighted mode    3
-          b         se       pval
-1 0.1615007 0.08058135 0.04504917
-2 1.9807200 2.01513549 0.50548294
-3 0.1723837 0.09897681 0.08156846
-4 0.1952318 0.11767002 0.23895296
+结果意义：
+TwoSampleMR分析输入exposure和outcome文件，Exposure文件为遗传变异与暴露因素的gwas结果，Outcome文件为遗传变异与结局变量的gwas结果。
+Harmonise data主要目的用于将SNP位点统一调整成正链，并且根据allele和频率判断两个gwas结果中的SNP位点是否一致，不一致的进行去除。
+MR分析的4种方法计算出来的结果pvalue比较一致，pvalue> 0.05,均不显著。
