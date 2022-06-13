@@ -3,8 +3,8 @@
 #finngen dataset过大，运行过慢。所以每个癌种按染色体拆分，只留下chr6，chr10，chr17三条相关染色体文件合并。
 
 x <- read.table("finngen_LUNG_EXALLC.txt",col.names = c("chrom","pos","ref","alt","rsids","nearest_genes","pval","mlogp","beta","sebeta","maf","maf_cases","maf_controls"), sep = "\t")
+result <- split(x, x$chrom)
 for (i in c(6,10,17)){                  
-   result <- split(x, x$chrom)
    write.table(result[[i]], file = paste0("lung_chr",i,sep=""), quote = FALSE, row.names = FALSE)
 }
 
