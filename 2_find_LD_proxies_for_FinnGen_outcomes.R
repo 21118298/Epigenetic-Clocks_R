@@ -175,7 +175,7 @@ replacement_cols_proxy <- function(proxy) {
 
 b <- replacement_cols_proxy(a)
 
-# Function to replace proxy SNP details by original SNP details
+# Function to replace proxy SNP details by original SNP details 用original信息替换proxy
 replace_proxy_by_original <- function(proxy, out_dat_proxies) {
   #proxy 1
   out_dat_proxies$effect_allele.outcome[out_dat_proxies$SNP==proxy[2,1] & out_dat_proxies$effect_allele.outcome == proxy[2,10]] <- proxy[2,9] #A1 effect allele
