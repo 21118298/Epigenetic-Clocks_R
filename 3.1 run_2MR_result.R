@@ -6,6 +6,6 @@ id.exposure id.outcome                                    outcome               
 4     GrimAge     1stH7R lung cancer (excluding cancer in controls) DNA_methylation_ageing             Weighted mode    4  0.16921787 0.12305455 0.2627859
 
 结果意义：
-TwoSampleMR分析输入exposure和outcome文件，Exposure文件为遗传变异与暴露因素的gwas结果，Outcome文件为遗传变异与结局变量的gwas结果。
+MR分析输入exposure和outcome文件，Exposure文件为遗传变异与暴露因素的gwas结果，Outcome文件为遗传变异与结局变量的gwas结果。这两个文件我们分别在step1和2format好。
 Harmonise data主要目的用于将SNP位点统一调整成正链，并且根据allele和频率判断两个gwas结果中的SNP位点是否一致，不一致的进行去除。
-MR分析的4种方法计算出来的结果pvalue比较一致，pvalue> 0.05,均不显著。
+通过4种算法计算出MR结果，主要看IVW的结果，其他作为稳定性和一致性的参考。b相当于OR值，是正向或者反向量化的一个指标。
