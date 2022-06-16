@@ -103,17 +103,21 @@ meta_func <- function(method_varname, exp_varname, out1, out2="", out3="", out4=
   #studlab：研究的名称
   #comb.fixed：是否使用固定效应模型
   #comb.random：是否使用随机效应模型
+  #method.tau：研究间方差应使用哪种估算量
+  #hakn：是否采用Hartung-Knapp方法
+  #sm：计算的总效应
+  #byvar：亚组分析
   
   #extract values from meta output
-  TE.tibble <- as_tibble(a$TE.fixed.w)
-  se.tibble <- as_tibble(a$seTE.fixed.w)
-  p.tibble <- as_tibble(a$pval.fixed.w)
-  bylevs.tibble <- as_tibble(a$bylevs)
+  TE.tibble <- as_tibble(a$TE.fixed.w)   #b
+  se.tibble <- as_tibble(a$seTE.fixed.w) #se
+  p.tibble <- as_tibble(a$pval.fixed.w)  #pvalue
+  bylevs.tibble <- as_tibble(a$bylevs)   #outcome
   #combine tibbles and change column names
   tibble <- cbind(TE.tibble, se.tibble, p.tibble, bylevs.tibble)
-  colnames(tibble) <- c("b", "se", "pval", "outcome")
-  #add columns for exposure and method
-  tibble$exposure <- exp_varname
+  colnames(tibble) <- c("b", "se", "pval", "outcome") #加列名
+  #add columns for exposure and method #在后面加两列
+  tibble$exposure <- exp_varname 
   tibble$method <- method_varname
   tibble
   
@@ -171,15 +175,15 @@ IEAA <- rbind(IVW_IEAA, egger_IEAA, median_IEAA, mode_IEAA)
 #               Multiple testing correction
 ##################################################################
 
-# Function to apply multiple testing correction to main meta-analysed IVW results
+# Function to apply multiple testing correction to main meta-analysed IVW results 对IVW结果进行矫正
 multiple_testing_func <- function(results_IVW){
-  results_IVW$p.fdr<- p.adjust(results_IVW$pval, method = "fdr")
+  results_IVW$p.fdr<- p.adjust(results_IVW$pval, method = "fdr") #Benjamini-Hochberg false discovery rate (FDR) < 5% was used to correct the pooled main IVW results for multiple testing
   results_IVW$p.bon<- p.adjust(results_IVW$pval, method = "bonferroni")
   results_IVW$p.hoch <- p.adjust(results_IVW$pval, method = "hochberg")
-  results_IVW$p.sig <- ifelse(results_IVW$pval < .05, "*", "")
-  results_IVW$p.fdr.sig <- ifelse(results_IVW$p.fdr < .05, "*", "")
-  results_IVW$p.bon.sig <- ifelse(results_IVW$p.bon < .05, "*", "")
-  results_IVW$p.hoch.sig <- ifelse(results_IVW$p.hoch < .05, "*", "")
+  results_IVW$p.sig <- ifelse(results_IVW$pval < .05, "*", "")        #若小于0.05，加*标
+  results_IVW$p.fdr.sig <- ifelse(results_IVW$p.fdr < .05, "*", "")   #若小于0.05，加*标
+  results_IVW$p.bon.sig <- ifelse(results_IVW$p.bon < .05, "*", "")   #若小于0.05，加*标
+  results_IVW$p.hoch.sig <- ifelse(results_IVW$p.hoch < .05, "*", "") #若小于0.05，加*标
   return(results_IVW)
 }
 
