@@ -1,13 +1,49 @@
-Meta-analysis 从相关研究中整合定量数据，并产生能够总结研究整体的结果。Fixed effect meta-analysis假定所有研究都估计固定的treatment effect。
+Meta-analysis 从相关研究中整合定量数据，并产生能够总结研究整体的结果。
 fixed effect假定所有研究都估计出相同的治疗效果，只是因为取样的偶然（chance）差异导致观察到的treatment effect不同。
 合并之前，首先应该进行异质性检验，保证现有的各独立研究间的结果的不同仅仅是由于抽样误差造成的。
-若同时如何I2<50%和P≥0.1时，纳入文献被认为是同质的，采用固定效应模型（fixed effect model）分析
+
+Number of studies combined: k = 6  #本次纳入meta分析的研究（或效应量）有6个（lung cancer两个），因此k=6。
 
 
-#红框：显示的是meta分析里纳入的每一个研究（或效应量）所对应的作者名、年份、Cohen’s d值，置信区间，以及固定效应模型(fixed)和随机效应模型(random)计算出的权重。本次纳入meta分析的研究（或效应量）有6个，因此k=6。
+                        OR           95%-CI     z p-value
+Common effect model 0.9613 [0.9357; 0.9875] -2.88  0.0040      #综合效应量的结果
+#Common effect model计算的综合效应量为0.9613，95%CI为[0.9357; 0.9875]，z检验值为-2.88，p<0.0040。【结果显著】
 
-#黄框：显示的是综合效应量的结果。如图可见：固定效应模型（fixed effect model）计算的综合效应量为0.4166，95%CI为[0.2906; 0.5426]，z检验值为6.48，p<0.0001。随机效应模型（random effects model）计算的综合效应量为0.3602，95%CI为[0.1534; 0.5671]，z检验值为3.41，p=0.0006。可以看到这里采用两个模型计算出的显著结果略有不同，研究中通常会采用更加保守的随机效应模型。两个模型的区别：若研究异质性的低于推荐标准值时，应采用固定效应模型（Fixed Effects Model）；而当异质性大于推荐标准值时，应选采用随机效应模型（Randomized Effects Model）进行meta分析。
+#以下是异质性检验的结果。
+Quantifying heterogeneity:
+ tau^2 = 0 [0.0000; 0.0136]; tau = 0 [0.0000; 0.1166]
+ I^2 = 0.0% [0.0%; 74.6%]; H = 1.00 [1.00; 1.99]
 
-#蓝框：显示的是异质性检验的结果。主要看Q检验（检验水准为α=0.1）的结果，以及I^2值（0～100%），一般来讲，I^2值0%-25%为低异质性, 50%-75%为中等异质性，>75%为高异质性。异质性越高，代表纳入的研究（或效应量）间差异越大，在实证研究中，这种差异可能是由于实验范式、被试特征、施策时间、施策地点差异等造成，因此大部分meta分析会进一步假设可能的影响因素，再做亚组分析。
+Test of heterogeneity:
+    Q d.f. p-value
+ 4.07    5  0.5390
+#主要看Q检验（检验水准为α=0.1）的结果，以及I^2值（0～100%），一般来讲，I^2值0%-25%为低异质性, 50%-75%为中等异质性，>75%为高异质性。
+#异质性越高，代表纳入的研究（或效应量）间差异越大。
 
-I2：研究之间真实异质性占总变异的比重
+Results for subgroups (common effect model):
+                               k     OR           95%-CI    Q  I^2  tau^2    tau
+subgroup = Ovarian cancer      1 0.9651 [0.8985; 1.0367] 0.00   --     --     --
+subgroup = Breast cancer       1 0.9573 [0.9256; 0.9901] 0.00   --     --     --
+subgroup = Lung cancer         2 0.9898 [0.8973; 1.0917] 1.03 2.7% 0.0002 0.0140
+subgroup = Prostate cancer     1 0.9284 [0.8555; 1.0075] 0.00   --     --     --
+subgroup = Colorectal cancer   1 1.0620 [0.9229; 1.2219] 0.00   --     --     --
+
+Test for subgroup differences (common effect model):
+                  Q d.f. p-value
+Between groups 3.04    4  0.5504
+Within groups  1.03    1  0.3106
+
+Details on meta-analytical method:
+- Inverse variance method
+- DerSimonian-Laird estimator for tau^2
+- Jackson method for confidence interval of tau^2 and tau
+#五个亚组各自的综合效应量，可以看到：固定效应模型的亚组分析没有发现组间（between groups）显著的差异，表明数据采集的地区并不调节综合效应的结果。
+
+
+IVW_GrimAge矫正后结果：
+            b         se       pval           outcome exposure                    method      p.fdr      p.bon     p.hoch p.sig
+1 -0.03548549 0.03648373 0.33073289    Ovarian cancer  GrimAge Inverse variance weighted 0.50138228 1.00000000 0.80221165      
+2 -0.04368244 0.01718616 0.01103078     Breast cancer  GrimAge Inverse variance weighted 0.05515389 0.05515389 0.05515389     *
+3 -0.01029789 0.05001739 0.83687975       Lung cancer  GrimAge Inverse variance weighted 0.83687975 1.00000000 0.83687975      
+4 -0.07429318 0.04169544 0.07478090   Prostate cancer  GrimAge Inverse variance weighted 0.18695225 0.37390450 0.29912360      
+5  0.06011094 0.07159065 0.40110583 Colorectal cancer  GrimAge Inverse variance weighted 0.50138228 1.00000000 0.80221165      
