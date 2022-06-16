@@ -29,7 +29,7 @@ pacman::p_load("meta", "metafor", "openxlsx", "TwoSampleMR", "tidyverse", "dplyr
 load_data_func <- function(file_name)
 {
   results <- read.table(file = file_name, header = T)
-  results <- split_outcome(results) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+  results <- split_outcome(results) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 把exposure的id部分拆分去掉
 }
 
 results_IEU <- load_data_func("results_IEU.txt")
@@ -40,7 +40,7 @@ results_FINNGEN <- load_data_func("results_FINNGEN.txt")
 #                           Format MR results                         #----
 #---------------------------------------------------------------------#
 
-# Add new column with study name
+# Add new column with study name 加新的一列标记研究名称
 results_IEU$study[results_IEU$outcome=="Colorectal cancer"] <- "GECCO"
 results_IEU$study[results_IEU$outcome=="Lung cancer"] <- "ILCCO"
 results_IEU$study[results_IEU$outcome=="Breast cancer (Combined Oncoarray; iCOGS; GWAS meta analysis)"] <- "BCAC"
@@ -49,11 +49,11 @@ results_IEU$study[results_IEU$outcome=="Prostate cancer"] <- "PRACTICAL"
 results_UKB$study <- "UK Biobank"
 results_FINNGEN$study <- "FinnGen"
 
-# Rename IEU results and filter to only include some of them in the meta-analysis
+# Rename IEU results and filter to only include some of them in the meta-analysis 过滤统一癌症的名称
 results_IEU$outcome[results_IEU$outcome=="Breast cancer (Combined Oncoarray; iCOGS; GWAS meta analysis)"] <- "Breast cancer"
 results_IEU <- results_IEU[which(results_IEU$outcome=='Breast cancer' | results_IEU$outcome=='Ovarian cancer' | results_IEU$outcome=='Prostate cancer' | results_IEU$outcome=='Lung cancer' | results_IEU$outcome=='Colorectal cancer'),]
 
-# Rename UKB results and filter to only include some of them in the meta-analysis
+# Rename UKB results and filter to only include some of them in the meta-analysis 过滤统一癌症的名称
 results_UKB$outcome[results_UKB$outcome=="breast cancer"] <- 'Breast cancer'
 results_UKB$outcome[results_UKB$outcome=="ovarian cancer"] <- 'Ovarian cancer'
 results_UKB$outcome[results_UKB$outcome=="prostate cancer"] <- 'Prostate cancer'
@@ -61,7 +61,7 @@ results_UKB$outcome[results_UKB$outcome=="lung cancer unadjusted"] <- 'Lung canc
 results_UKB$outcome[results_UKB$outcome=="colorectal cancer"] <- 'Colorectal cancer'
 results_UKB <- results_UKB[which(results_UKB$outcome=='Breast cancer' | results_UKB$outcome=='Ovarian cancer' | results_UKB$outcome=='Prostate cancer' | results_UKB$outcome=='Lung cancer' | results_UKB$outcome=='Colorectal cancer'),]
 
-# Rename FinnGen results and filter to only include some of them in the meta-analysis
+# Rename FinnGen results and filter to only include some of them in the meta-analysis 过滤统一癌症的名称
 results_FINNGEN$outcome[results_FINNGEN$outcome=="breast cancer (excluding cancer in controls)"] <- 'Breast cancer'
 results_FINNGEN$outcome[results_FINNGEN$outcome=="ovarian cancer (excluding cancer in controls)"] <- 'Ovarian cancer'
 results_FINNGEN$outcome[results_FINNGEN$outcome=="prostate cancer (excluding cancer in controls)"] <- 'Prostate cancer'
@@ -69,14 +69,14 @@ results_FINNGEN$outcome[results_FINNGEN$outcome=="lung cancer (excluding cancer 
 results_FINNGEN$outcome[results_FINNGEN$outcome=="colorectal cancer (excluding cancer in controls)"] <- 'Colorectal cancer'
 results_FINNGEN <- results_FINNGEN[which(results_FINNGEN$outcome=='Breast cancer' | results_FINNGEN$outcome=='Ovarian cancer' | results_FINNGEN$outcome=='Prostate cancer' | results_FINNGEN$outcome=='Lung cancer' | results_FINNGEN$outcome=='Colorectal cancer'),]
 
-# Combine results
+# Combine results 合并结果
 results <- rbind(results_IEU, results_UKB, results_FINNGEN)
 
 #---------------------------------------------------------------------#
 #                           Run meta-analysis                         #----
 #---------------------------------------------------------------------#
 
-# Function to run a fixed effect meta-analysis 
+# Function to run a fixed effect meta-analysis 赋值，method，clock，5个cancer
 meta_func <- function(method_varname, exp_varname, out1, out2="", out3="", out4="", 
                         out5="", out6="", out7="", out8="", out9="", out10="", 
                         out11="", out12="", out13="", out14="", out15="", 
@@ -97,7 +97,13 @@ meta_func <- function(method_varname, exp_varname, out1, out2="", out3="", out4=
                hakn = FALSE, byvar = c(outcome),
                method.tau="DL", comb.fixed = T, comb.random = F, exclude = id.outcome %in% c("J2M7ze")) #excluding colorectal cancer in UKB from MA
   print(a)
-
+  #TE：检索每个研究的效应量
+  #seTE：检索每个研究的标准误
+  #data：数据集的名称
+  #studlab：研究的名称
+  #comb.fixed：是否使用固定效应模型
+  #comb.random：是否使用随机效应模型
+  
   #extract values from meta output
   TE.tibble <- as_tibble(a$TE.fixed.w)
   se.tibble <- as_tibble(a$seTE.fixed.w)
