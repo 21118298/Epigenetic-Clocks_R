@@ -25,19 +25,19 @@ pacman::p_load("MRInstruments", "TwoSampleMR", "tidyverse", "dplyr", "ggpubr", "
 #                            Available data                           #----
 #---------------------------------------------------------------------#
 
-ao <- available_outcomes()
+ao <- available_outcomes() # 读取MR-Base平台上的GWAS数据
 
 
 #---------------------------------------------------------------------#
 #                            Read exposure                             #----
 #---------------------------------------------------------------------#
 #read exposure
-exp_dat <- read.table("exp_data.txt", header = T)
+exp_dat <- read.table("exp_data.txt", header = T) #读取exposure数据
 
 #---------------------------------------------------------------------#
 #                            Outcomes                                  #----
 #---------------------------------------------------------------------#
-# Extract outcomes from the IEU catalog (MR-Base)
+# Extract outcomes from the IEU catalog (MR-Base) #读取outcome特定癌种数据中与exposureSNPmatch的数据
 IEU_out_dat <- extract_outcome_data(
   snps = exp_dat$SNP,
   outcomes = c("ieu-a-1126", "ieu-b-85", "ieu-a-966", "ieu-a-1120", "ieu-a-1127", 
@@ -45,13 +45,13 @@ IEU_out_dat <- extract_outcome_data(
                "ieu-a-1125", "ieu-a-965", "ieu-a-967")
 ) 
 
-# Read GECCO outcomes
+# Read GECCO outcomes #读取GECCO数据
 x <- read.csv("GECCO.csv", 
                 header = T)
 x$SNP <- exp_dat$SNP[match(x$Position, exp_dat$pos.exposure)]
 
 
-out_func_GECCO <- function(name)
+out_func_GECCO <- function(name) #对GECCO数据进行调整format，读取outcome数据中与exposureSNPmatch的数据
 {
   # Extract outcome SNPs matching the SNPs in the exposure dataset
   outcome_var <- x %>% format_data(snps = exp_dat$SNP, 
@@ -71,11 +71,11 @@ out_func_GECCO <- function(name)
 
 GECCO <- out_func_GECCO("Colorectal cancer")
 
-IEU_out_dat <- smartbind(IEU_out_dat, GECCO)
+IEU_out_dat <- smartbind(IEU_out_dat, GECCO) #合并
 #---------------------------------------------------------------------#
 #                            Harmonisation                             #----
 #---------------------------------------------------------------------#
-# Harmonise exposure and outcome datasets
+# Harmonise exposure and outcome datasets #调整正反链，使它们方向一致。
 data_IEU <- harmonise_data(
   exposure_dat = exp_dat, 
   outcome_dat = IEU_out_dat
@@ -84,7 +84,7 @@ data_IEU <- harmonise_data(
 #---------------------------------------------------------------------#
 #                            Results                                   #----
 #---------------------------------------------------------------------#
-# Run two-sample MR
+# Run two-sample MR 执行MR分析，用四种计算方法
 results_IEU <- mr(data_IEU, method_list = c("mr_ivw", "mr_egger_regression", 
                                     "mr_weighted_median", "mr_weighted_mode"))
 
